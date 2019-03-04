@@ -13,10 +13,10 @@ def handleOSCMessage(x, y, z):
     rospy.loginfo(positionStr)
     position = PointStamped()
     position.header.stamp = rospy.Time.now()
-    position.header.frame_id = "pos"
-    position.point.x = float(x)
-    position.point.y = float(y)
-    position.point.z = float(z)
+    position.header.frame_id = "unreal"
+    position.point.x = float(x)/100
+    position.point.y = float(y)/100
+    position.point.z = float(z)/100
     pub.publish(position)
     rate.sleep()
 
