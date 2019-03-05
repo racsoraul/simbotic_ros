@@ -1,31 +1,36 @@
 #!/usr/bin/env python
 
-# Publishes `position` of agent to the `/agent/position` topic.
+# Publishes `pose` of agent to the `/agent/pose` topic.
 
 import rospy
-from geometry_msgs.msg import PointStamped
+from geometry_msgs.msg import PoseStamped
 from osc4py3.as_eventloop import (osc_startup, osc_udp_server, osc_method,
     osc_process, osc_terminate)
 from osc4py3 import oscmethod as osm
 
-def handleOSCMessage(x, y, z):
-    positionStr = "Position(%s, %s, %s)"%(x, y, z)
-    rospy.loginfo(positionStr)
-    position = PointStamped()
-    position.header.stamp = rospy.Time.now()
-    position.header.frame_id = "unreal"
-    position.point.x = float(x)/100
-    position.point.y = float(y)/100
-    position.point.z = float(z)/100
-    pub.publish(position)
+def handleOSCPoseMessage(px, py, pz, qx, qy, qz, qw):
+    poseStr = "Position(%s, %s, %s), Quaternion(%s, %s, %s, %s)" % (
+        px, py, pz, qx, qy, qz, qw)
+    rospy.loginfo(poseStr)
+    agentP = PoseStamped()
+    agentP.header.stamp = rospy.Time.now()
+    agentP.header.frame_id = "unreal"
+    agentP.pose.position.x = float(px)/100
+    agentP.pose.position.y = -float(py)/100
+    agentP.pose.position.z = float(pz)/100
+    agentP.pose.orientation.x = float(qx)/100
+    agentP.pose.orientation.y = float(qy)/100
+    agentP.pose.orientation.z = -float(qz)/100
+    agentP.pose.orientation.w = float(qw)/100
+    pub.publish(agentP)
     rate.sleep()
 
 osc_startup()
 osc_udp_server("0.0.0.0", 7000, "UnrealGAMS")
 
-osc_method("/agent/0/pos", handleOSCMessage)
+osc_method("/agent/0/pose", handleOSCPoseMessage)
 
-pub = rospy.Publisher('agent/position', PointStamped, queue_size=10)
+pub = rospy.Publisher('agent/pose', PoseStamped, queue_size=10)
 rospy.init_node('agent', anonymous=True)
 rate = rospy.Rate(10) # 10hz
  

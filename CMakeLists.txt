@@ -73,10 +73,6 @@ generate_messages(
   std_msgs
 )
 
-catkin_package(
-  CATKIN_DEPENDS message_runtime
-)
-
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
 ################################################
@@ -109,7 +105,7 @@ catkin_package(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES simbotic_ros
-#  CATKIN_DEPENDS rospy std_msgs
+  CATKIN_DEPENDS message_runtime
 #  DEPENDS system_lib
 )
 
